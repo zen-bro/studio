@@ -17,14 +17,14 @@ export const DrawingManager = ({ onPolygonComplete }: DrawingManagerProps) => {
       return;
     }
 
-    const { event } = coreLib;
-    const { DrawingManager, DrawingMode } = drawingLib;
+    const { event, ControlPosition } = coreLib;
+    const { DrawingManager } = drawingLib;
 
     const drawingManager = new DrawingManager({
       drawingControl: true,
       drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [DrawingMode.POLYGON],
+        position: ControlPosition.TOP_CENTER,
+        drawingModes: ['polygon'],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
