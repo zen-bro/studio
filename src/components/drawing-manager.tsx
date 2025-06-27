@@ -37,14 +37,14 @@ export const DrawingManager = (props: DrawingManagerProps) => {
   useEffect(() => {
     if (!drawingManager || !maps) return;
 
-    const listener = maps.event.addListener(
+    const listener = google.maps.event.addListener(
       drawingManager,
       'polygoncomplete',
       props.onPolygonComplete
     );
 
     return () => {
-      maps.event.removeListener(listener);
+      google.maps.event.removeListener(listener);
     };
   }, [drawingManager, maps, props.onPolygonComplete]);
 
