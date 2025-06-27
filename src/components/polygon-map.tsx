@@ -15,13 +15,12 @@ export function PolygonMap({
   polygon: LatLngLiteral[];
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
 }) {
-  const maps = useMapsLibrary('maps');
   const drawing = useMapsLibrary('drawing');
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(null);
 
   useEffect(() => {
-    // Only set the options when both the maps and drawing libraries are loaded.
-    if (!maps || !drawing) {
+    // Only set the options when the drawing library is loaded.
+    if (!drawing) {
       return;
     }
 
@@ -39,7 +38,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, [maps, drawing]);
+  }, [drawing]);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
