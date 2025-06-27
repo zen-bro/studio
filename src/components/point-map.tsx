@@ -1,7 +1,8 @@
 'use client';
 
 import { Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import type { LatLngLiteral } from 'google.maps';
+import type { LatLngLiteral, MapMouseEvent } from 'google.maps';
+import { useCallback } from 'react';
 
 const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
 
@@ -14,6 +15,15 @@ export function PointMap({
   onPointSelect: (point: LatLngLiteral) => void;
   mapType: string;
 }) {
+  const handleClick = useCallback(
+    (e: MapMouseEvent) => {
+      if (e.latLng) {
+        onPointSelect(e.latLng.toJSON());
+      }
+    },
+    [onPointSelect]
+  );
+
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
       <Map
@@ -21,7 +31,7 @@ export function PointMap({
         defaultZoom={13}
         mapId="point-map"
         mapTypeId={mapType}
-        onClick={e => e.latLng && onPointSelect(e.latLng.toJSON())}
+        onClick={handleClick}
         fullscreenControl={false}
         streetViewControl={false}
         mapTypeControl={false}
