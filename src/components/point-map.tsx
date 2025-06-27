@@ -1,7 +1,6 @@
 'use client';
 
 import { Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import { Polygon } from '@/components/polygon';
 import type { LatLngLiteral } from 'google.maps';
 
 const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
@@ -31,17 +30,7 @@ export function PointMap({
         gestureHandling="cooperative"
         clickableIcons={false}
       >
-        {polygon.length > 0 && (
-          <Polygon
-            paths={polygon}
-            fillColor="hsl(54, 100%, 50%)"
-            fillOpacity={0.4}
-            strokeColor="hsl(54, 100%, 50%)"
-            strokeWeight={1}
-            strokeOpacity={0.5}
-            clickable={false}
-          />
-        )}
+        {/* The polygon is intentionally not rendered here to allow for point selection without visual bias. The point is still evaluated against the polygon from the other map. */}
         {point && <AdvancedMarker position={point} />}
       </Map>
     </div>
