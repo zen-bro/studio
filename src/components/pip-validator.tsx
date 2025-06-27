@@ -92,7 +92,16 @@ export function PipValidator() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">Click anywhere on the map to select a point.</p>
-            <PointMap polygon={polygon} point={point} onPointSelect={setPoint} mapType={mapType} />
+            <PointMap point={point} onPointSelect={setPoint} mapType={mapType} />
+            <div className="mt-4">
+              <Label htmlFor="point-coords" className="text-sm font-medium">Selected Point (for debugging)</Label>
+              <Textarea
+                id="point-coords"
+                readOnly
+                value={point ? JSON.stringify(point, null, 2) : "No point selected yet."}
+                className="mt-2 font-mono text-xs h-24 bg-muted"
+              />
+            </div>
           </CardContent>
         </Card>
       </div>

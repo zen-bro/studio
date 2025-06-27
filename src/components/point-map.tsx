@@ -6,12 +6,10 @@ import type { LatLngLiteral } from 'google.maps';
 const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
 
 export function PointMap({
-  polygon,
   point,
   onPointSelect,
   mapType,
 }: {
-  polygon: LatLngLiteral[];
   point: LatLngLiteral | null;
   onPointSelect: (point: LatLngLiteral) => void;
   mapType: string;
