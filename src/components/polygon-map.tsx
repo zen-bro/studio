@@ -28,8 +28,8 @@ export function PolygonMap({
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
+        position: maps.ControlPosition.TOP_CENTER,
+        drawingModes: [drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
