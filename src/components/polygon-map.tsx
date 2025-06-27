@@ -1,6 +1,6 @@
 'use client';
 
-import { Map, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { Map, useMapsLibrary, ControlPosition } from '@vis.gl/react-google-maps';
 import { Polygon } from '@/components/polygon';
 import type { LatLngLiteral } from 'google.maps';
 import { DrawingManager } from './drawing-manager';
@@ -25,12 +25,11 @@ export function PolygonMap({
       return;
     }
 
-    // At this point, the google.maps global should be fully available.
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
+        position: ControlPosition.TOP_CENTER,
+        drawingModes: [drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
