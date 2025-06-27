@@ -17,11 +17,12 @@ export function PolygonMap({
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
   mapType: string;
 }) {
+  const maps = useMapsLibrary('maps');
   const drawing = useMapsLibrary('drawing');
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(null);
 
   useEffect(() => {
-    if (!drawing) {
+    if (!maps || !drawing) {
       return;
     }
 
@@ -29,7 +30,7 @@ export function PolygonMap({
       drawingControl: true,
       drawingControlOptions: {
         position: ControlPosition.TOP_CENTER,
-        drawingModes: [drawing.DrawingMode.POLYGON],
+        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
@@ -39,7 +40,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, [drawing]);
+  }, [maps, drawing]);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
