@@ -21,9 +21,10 @@ export function PolygonMap({
     null
   );
   const drawing = useMapsLibrary('drawing');
+  const maps = useMapsLibrary('maps');
 
   useEffect(() => {
-    if (!drawing) return;
+    if (!drawing || !maps) return;
 
     setDrawingManagerOptions({
       drawingControl: true,
@@ -39,7 +40,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, [drawing]);
+  }, [drawing, maps]);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
@@ -52,6 +53,7 @@ export function PolygonMap({
         streetViewControl={false}
         mapTypeControl={false}
         gestureHandling="cooperative"
+        clickableIcons={false}
       >
         {drawingManagerOptions && (
           <DrawingManager

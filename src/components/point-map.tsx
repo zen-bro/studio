@@ -29,6 +29,7 @@ export function PointMap({
         streetViewControl={false}
         mapTypeControl={false}
         gestureHandling="cooperative"
+        clickableIcons={false}
       >
         {polygon.length > 0 && (
           <Polygon
