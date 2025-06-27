@@ -15,20 +15,22 @@ export function PolygonMap({
   polygon: LatLngLiteral[];
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
 }) {
+  const maps = useMapsLibrary('maps');
   const drawing = useMapsLibrary('drawing');
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(null);
 
-
   useEffect(() => {
-    if (!drawing) {
+    // Only set the options when both the maps and drawing libraries are loaded.
+    if (!maps || !drawing) {
       return;
     }
 
+    // At this point, the google.maps global should be fully available.
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [drawing.DrawingMode.POLYGON],
+        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
@@ -38,7 +40,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, [drawing]);
+  }, [maps, drawing]);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
