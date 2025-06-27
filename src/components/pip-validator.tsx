@@ -5,7 +5,7 @@ import type { LatLngLiteral } from 'google.maps';
 import { PolygonMap } from '@/components/polygon-map';
 import { PointMap } from '@/components/point-map';
 import { CodeBlock } from '@/components/code-block';
-import { isPointInPolygon, pointInPolygonCode, PipResultDetails } from '@/lib/geometry';
+import { isPointInPolygon, pointInPolygonCode, pointInPolygonCodePython, PipResultDetails } from '@/lib/geometry';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PipResult } from '@/components/pip-result';
 import {
@@ -151,9 +151,18 @@ export function PipValidator() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            Here is the reference implementation for the point-in-polygon (PIP) check using the Ray Casting algorithm. You can copy it for your own projects.
+            Here is the reference implementation for the point-in-polygon (PIP) check using the Ray Casting algorithm in both TypeScript and Python. You can copy it for your own projects.
           </p>
-          <CodeBlock code={pointInPolygonCode} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-semibold mb-2">TypeScript</h3>
+              <CodeBlock code={pointInPolygonCode} />
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Python 3.12+</h3>
+              <CodeBlock code={pointInPolygonCodePython} />
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

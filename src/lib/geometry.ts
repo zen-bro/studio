@@ -100,3 +100,43 @@ export const isPointInPolygon = (point: LatLngLiteral, polygon: LatLngLiteral[])
   return isInside;
 };
 `;
+
+export const pointInPolygonCodePython = `
+def is_point_in_polygon(point: dict, polygon: list[dict]) -> bool:
+    """
+    Determines if a point is inside a polygon using the Ray Casting algorithm.
+    This implementation is written in pure Python 3.12+ with no external libraries.
+
+    Args:
+        point (dict): The point to check, expecting 'lat' and 'lng' keys.
+        polygon (list[dict]): A list of points representing the polygon's 
+                              vertices. Each point is a dict with 'lat' and 
+                              'lng' keys.
+
+    Returns:
+        bool: True if the point is inside the polygon, False otherwise.
+    """
+    is_inside = False
+    # Use longitude for x and latitude for y for a 2D plane projection
+    x = point["lng"]
+    y = point["lat"]
+
+    num_vertices = len(polygon)
+    j = num_vertices - 1  # Previous vertex index
+    
+    for i in range(num_vertices):
+        xi, yi = polygon[i]["lng"], polygon[i]["lat"]
+        xj, yj = polygon[j]["lng"], polygon[j]["lat"]
+
+        # Check if the horizontal ray from the point at (x, y) intersects
+        # with the edge defined by vertices i and j.
+        y_intersects = ((yi > y) != (yj > y))
+        x_intersection = (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+
+        if y_intersects and x_intersection:
+            is_inside = not is_inside
+        
+        j = i  # Move to the next edge
+
+    return is_inside
+`;
