@@ -1,12 +1,12 @@
 'use client';
 
-import { Map, ControlPosition } from '@vis.gl/react-google-maps';
-import { Polygon } from '@/components/polygon';
-import type { LatLngLiteral } from 'google.maps';
-import { DrawingManager } from './drawing-manager';
-import { useEffect, useState } from 'react';
+import {Map, ControlPosition, useMapsLibrary} from '@vis.gl/react-google-maps';
+import {Polygon} from '@/components/polygon';
+import type {LatLngLiteral} from 'google.maps';
+import {DrawingManager} from './drawing-manager';
+import {useEffect, useState} from 'react';
 
-const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
+const center = {lat: 26.9631, lng: -80.1114}; // Tequesta, FL
 
 export function PolygonMap({
   polygon,
@@ -17,9 +17,14 @@ export function PolygonMap({
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
   mapType: string;
 }) {
-  const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(null);
+  const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(
+    null
+  );
+  const drawing = useMapsLibrary('drawing');
 
   useEffect(() => {
+    if (!drawing) return;
+
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
@@ -34,7 +39,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, []);
+  }, [drawing]);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
@@ -50,8 +55,11 @@ export function PolygonMap({
       >
         {drawingManagerOptions && (
           <DrawingManager
-            onPolygonComplete={googlePolygon => {
-              const path = googlePolygon.getPath().getArray().map(p => p.toJSON());
+            onPolygonComplete={(googlePolygon) => {
+              const path = googlePolygon
+                .getPath()
+                .getArray()
+                .map((p) => p.toJSON());
               onPolygonComplete(path);
               googlePolygon.setMap(null);
             }}
