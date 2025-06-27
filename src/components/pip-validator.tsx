@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import type { LatLngLiteral } from 'google.maps';
 import { PolygonMap } from '@/components/polygon-map';
 import { PointMap } from '@/components/point-map';
@@ -29,6 +29,14 @@ export function PipValidator() {
     if (!point || polygon.length < 3) return null;
     return isPointInPolygon(point, polygon);
   }, [point, polygon]);
+
+  const handlePolygonComplete = useCallback((newPolygon: Polygon) => {
+    setPolygon(newPolygon);
+  }, []);
+
+  const handlePointSelect = useCallback((newPoint: LatLngLiteral) => {
+    setPoint(newPoint);
+  }, []);
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -73,7 +81,7 @@ export function PipValidator() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">Use the drawing tools on the map to create a polygon.</p>
-            <PolygonMap polygon={polygon} onPolygonComplete={setPolygon} mapType={mapType} />
+            <PolygonMap polygon={polygon} onPolygonComplete={handlePolygonComplete} mapType={mapType} />
             <div className="mt-4">
               <Label htmlFor="polygon-points" className="text-sm font-medium">Polygon Points (for debugging)</Label>
               <Textarea
@@ -92,7 +100,7 @@ export function PipValidator() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">Click anywhere on the map to select a point.</p>
-            <PointMap point={point} onPointSelect={setPoint} mapType={mapType} />
+            <PointMap point={point} onPointSelect={handlePointSelect} mapType={mapType} />
             <div className="mt-4">
               <Label htmlFor="point-coords" className="text-sm font-medium">Selected Point (for debugging)</Label>
               <Textarea
