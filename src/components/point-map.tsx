@@ -4,23 +4,26 @@ import { Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import { Polygon } from '@/components/polygon';
 import type { LatLngLiteral } from 'google.maps';
 
-const center = { lat: 40.7128, lng: -74.0060 }; // NYC
+const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
 
 export function PointMap({
   polygon,
   point,
   onPointSelect,
+  mapType,
 }: {
   polygon: LatLngLiteral[];
   point: LatLngLiteral | null;
   onPointSelect: (point: LatLngLiteral) => void;
+  mapType: string;
 }) {
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
       <Map
         defaultCenter={center}
-        defaultZoom={11}
+        defaultZoom={13}
         mapId="point-map"
+        mapTypeId={mapType}
         onClick={e => e.latLng && onPointSelect(e.latLng.toJSON())}
         fullscreenControl={false}
         streetViewControl={false}

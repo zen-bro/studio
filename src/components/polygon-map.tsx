@@ -6,20 +6,21 @@ import type { LatLngLiteral } from 'google.maps';
 import { DrawingManager } from './drawing-manager';
 import { useEffect, useState } from 'react';
 
-const center = { lat: 40.7128, lng: -74.0060 }; // NYC
+const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
 
 export function PolygonMap({
   polygon,
   onPolygonComplete,
+  mapType,
 }: {
   polygon: LatLngLiteral[];
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
+  mapType: string;
 }) {
   const drawing = useMapsLibrary('drawing');
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(null);
 
   useEffect(() => {
-    // Only set the options when the drawing library is loaded.
     if (!drawing) {
       return;
     }
@@ -28,7 +29,7 @@ export function PolygonMap({
       drawingControl: true,
       drawingControlOptions: {
         position: ControlPosition.TOP_CENTER,
-        drawingModes: [drawing.OverlayType.POLYGON],
+        drawingModes: [drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
@@ -44,8 +45,9 @@ export function PolygonMap({
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
       <Map
         defaultCenter={center}
-        defaultZoom={11}
+        defaultZoom={13}
         mapId="polygon-map"
+        mapTypeId={mapType}
         fullscreenControl={false}
         streetViewControl={false}
         mapTypeControl={false}
