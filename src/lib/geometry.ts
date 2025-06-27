@@ -16,9 +16,20 @@ export const isPointInPolygon = (point: LatLngLiteral, polygon: LatLngLiteral[])
   const x = point.lng;
   const y = point.lat;
 
-  let explanation = `Point-in-Polygon Test using Ray Casting Algorithm\n`;
+  let explanation = `Coordinate System Mapping\n`;
   explanation += `-------------------------------------------------\n`;
-  explanation += `Test Point (P): (x=${x.toFixed(6)}, y=${y.toFixed(6)})\n\n`;
+  explanation += `For 2D plane calculations, we map spherical coordinates (Latitude, Longitude) to a Cartesian coordinate system (x, y).\n\n`;
+  explanation += `Mapping:\n`;
+  explanation += `  - Longitude is treated as the x-coordinate.\n`;
+  explanation += `  - Latitude is treated as the y-coordinate.\n\n`;
+  explanation += `Selected Point:\n`;
+  explanation += `  - Latitude: ${point.lat.toFixed(6)}\n`;
+  explanation += `  - Longitude: ${point.lng.toFixed(6)}\n\n`;
+  explanation += `Converted to Coordinates (P):\n`;
+  explanation += `  - P = (x: ${x.toFixed(6)}, y: ${y.toFixed(6)})\n\n`;
+  explanation += `-------------------------------------------------\n`;
+  explanation += `Point-in-Polygon Test (Ray Casting Algorithm)\n`;
+  explanation += `-------------------------------------------------\n`;
   explanation += `The algorithm casts a horizontal ray from P to the right and counts intersections with polygon edges. An odd number of intersections means the point is inside.\n\n`;
   explanation += `Polygon Edges Analysis:\n`;
 

@@ -115,19 +115,24 @@ export function PipValidator() {
                 className="mt-2 font-mono text-xs h-24 bg-muted"
               />
             </div>
-            <div className="mt-4">
-              <Label htmlFor="pip-explanation" className="text-sm font-medium">Calculation Steps</Label>
-              <Textarea
-                id="pip-explanation"
-                readOnly
-                value={pipDetails ? pipDetails.explanation : "Draw a polygon and select a point to see the calculation."}
-                className="mt-2 font-mono text-xs h-64 bg-muted"
-              />
-            </div>
           </CardContent>
         </Card>
       </div>
 
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="font-headline">Math to convert from latitude, longitude, to coordinates.</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            id="pip-explanation"
+            readOnly
+            value={pipDetails ? pipDetails.explanation : "Draw a polygon and select a point to see the calculation."}
+            className="font-mono text-xs h-96 bg-muted"
+          />
+        </CardContent>
+      </Card>
+      
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="font-headline">3. Result</CardTitle>
