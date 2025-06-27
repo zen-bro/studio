@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useMap } from '@vis.gl/react-google-maps';
+import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 
 type DrawingManagerProps = {
   onPolygonComplete: (polygon: google.maps.Polygon) => void;
@@ -10,20 +10,22 @@ type DrawingManagerProps = {
 
 export const DrawingManager = (props: DrawingManagerProps) => {
   const map = useMap();
+  const maps = useMapsLibrary('maps');
+  const drawing = useMapsLibrary('drawing');
   const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
 
   // Create/destroy drawing manager
   useEffect(() => {
-    if (!map || !google.maps.drawing) return;
+    if (!map || !drawing) return;
 
-    const dm = new google.maps.drawing.DrawingManager();
+    const dm = new drawing.DrawingManager();
     dm.setMap(map);
     setDrawingManager(dm);
 
     return () => {
       dm.setMap(null);
     };
-  }, [map]);
+  }, [map, drawing]);
 
   // Update options
   useEffect(() => {
@@ -33,18 +35,18 @@ export const DrawingManager = (props: DrawingManagerProps) => {
 
   // Attach event listener
   useEffect(() => {
-    if (!drawingManager) return;
+    if (!drawingManager || !maps) return;
 
-    const listener = google.maps.event.addListener(
+    const listener = maps.event.addListener(
       drawingManager,
       'polygoncomplete',
       props.onPolygonComplete
     );
 
     return () => {
-      google.maps.event.removeListener(listener);
+      maps.event.removeListener(listener);
     };
-  }, [drawingManager, props.onPolygonComplete]);
+  }, [drawingManager, maps, props.onPolygonComplete]);
 
   return null;
 };
