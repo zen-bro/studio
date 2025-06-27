@@ -1,89 +1,71 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 
 type DrawingManagerProps = {
   onPolygonComplete: (polygon: google.maps.Polygon) => void;
-  options?: google.maps.drawing.DrawingManagerOptions;
 };
 
-export const DrawingManager = (props: DrawingManagerProps) => {
+export const DrawingManager = ({ onPolygonComplete }: DrawingManagerProps) => {
   const map = useMap();
-  const drawing = useMapsLibrary('drawing');
-  const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
+  const coreLib = useMapsLibrary('core');
+  const drawingLib = useMapsLibrary('drawing');
 
-  // Create/destroy drawing manager
   useEffect(() => {
-    if (!map || !drawing) return;
+    if (!map || !coreLib || !drawingLib) {
+      return;
+    }
 
-    const dm = new drawing.DrawingManager();
-    dm.setMap(map);
-    setDrawingManager(dm);
+    const { event } = coreLib;
+    const { DrawingManager, DrawingMode } = drawingLib;
 
-    return () => {
-      dm.setMap(null);
-    };
-  }, [map, drawing]);
+    const drawingManager = new DrawingManager({
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_CENTER,
+        drawingModes: [DrawingMode.POLYGON],
+      },
+      polygonOptions: {
+        fillColor: 'hsl(var(--primary))',
+        fillOpacity: 0.3,
+        strokeColor: 'hsl(var(--primary))',
+        strokeWeight: 2,
+        editable: false,
+        clickable: false,
+      },
+      drawingMode: null,
+    });
 
-  // Update options
-  useEffect(() => {
-    if (!drawingManager) return;
-    drawingManager.setOptions(props.options ?? {});
-  }, [drawingManager, props.options]);
+    drawingManager.setMap(map);
 
-  // Attach polygon complete event listener
-  useEffect(() => {
-    if (!drawingManager) return;
-
-    const listener = google.maps.event.addListener(
+    const polygonCompleteListener = event.addListener(
       drawingManager,
       'polygoncomplete',
-      props.onPolygonComplete
+      (polygon: google.maps.Polygon) => {
+        onPolygonComplete(polygon);
+        drawingManager.setDrawingMode(null);
+      }
     );
 
-    return () => {
-      google.maps.event.removeListener(listener);
-    };
-  }, [drawingManager, props.onPolygonComplete]);
-
-  // Listen for drawing mode changes to disable/enable map gestures
-  useEffect(() => {
-    if (!drawingManager || !map) return;
-
-    const listener = google.maps.event.addListener(
+    const drawingModeListener = event.addListener(
       drawingManager,
       'drawingmode_changed',
       () => {
         const mode = drawingManager.getDrawingMode();
-        if (mode) {
-          // A drawing tool is active, disable map gestures and set cursor.
-          map.setOptions({ 
-            gestureHandling: 'none',
-            draggableCursor: 'crosshair'
-          });
-        } else {
-          // No drawing tool is active, enable cooperative map gestures and reset cursor.
-          map.setOptions({ 
-            gestureHandling: 'cooperative',
-            draggableCursor: null // Let the map use its default
-          });
-        }
+        map.setOptions({
+          gestureHandling: mode ? 'none' : 'cooperative',
+          draggableCursor: mode ? 'crosshair' : null,
+        });
       }
     );
 
     return () => {
-      google.maps.event.removeListener(listener);
-      // Ensure gestures are re-enabled and cursor is reset when the component unmounts.
-      if (map.getGestureHandling() !== 'cooperative') {
-        map.setOptions({ 
-          gestureHandling: 'cooperative',
-          draggableCursor: null
-        });
-      }
+      event.removeListener(polygonCompleteListener);
+      event.removeListener(drawingModeListener);
+      drawingManager.setMap(null);
     };
-  }, [drawingManager, map]);
-
+  }, [map, coreLib, drawingLib, onPolygonComplete]);
 
   return null;
 };

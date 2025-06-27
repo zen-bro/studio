@@ -1,12 +1,11 @@
 'use client';
 
-import {Map, ControlPosition, useMapsLibrary} from '@vis.gl/react-google-maps';
-import {Polygon} from '@/components/polygon';
-import type {LatLngLiteral} from 'google.maps';
-import {DrawingManager} from './drawing-manager';
-import {useEffect, useState} from 'react';
+import { Map } from '@vis.gl/react-google-maps';
+import { Polygon } from '@/components/polygon';
+import type { LatLngLiteral } from 'google.maps';
+import { DrawingManager } from './drawing-manager';
 
-const center = {lat: 26.9631, lng: -80.1114}; // Tequesta, FL
+const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
 
 export function PolygonMap({
   polygon,
@@ -17,30 +16,6 @@ export function PolygonMap({
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
   mapType: string;
 }) {
-  const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(
-    null
-  );
-  const drawing = useMapsLibrary('drawing');
-
-  useEffect(() => {
-    if (!drawing) return;
-
-    setDrawingManagerOptions({
-      drawingControl: true,
-      drawingControlOptions: {
-        position: ControlPosition.TOP_CENTER,
-        drawingModes: ['polygon' as google.maps.drawing.DrawingMode],
-      },
-      polygonOptions: {
-        fillColor: 'hsl(var(--primary))',
-        fillOpacity: 0.3,
-        strokeColor: 'hsl(var(--primary))',
-        strokeWeight: 2,
-        editable: false,
-      },
-    });
-  }, [drawing]);
-
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
       <Map
@@ -54,19 +29,16 @@ export function PolygonMap({
         gestureHandling="cooperative"
         clickableIcons={false}
       >
-        {drawingManagerOptions && (
-          <DrawingManager
-            onPolygonComplete={(googlePolygon) => {
-              const path = googlePolygon
-                .getPath()
-                .getArray()
-                .map((p) => p.toJSON());
-              onPolygonComplete(path);
-              googlePolygon.setMap(null);
-            }}
-            options={drawingManagerOptions}
-          />
-        )}
+        <DrawingManager
+          onPolygonComplete={(googlePolygon) => {
+            const path = googlePolygon
+              .getPath()
+              .getArray()
+              .map((p) => p.toJSON());
+            onPolygonComplete(path);
+            googlePolygon.setMap(null); // Hide the temporary polygon drawn by the manager
+          }}
+        />
         {polygon.length > 0 && (
           <Polygon
             paths={polygon}
