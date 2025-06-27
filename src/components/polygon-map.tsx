@@ -29,7 +29,7 @@ export function PolygonMap({
       drawingControl: true,
       drawingControlOptions: {
         position: ControlPosition.TOP_CENTER,
-        drawingModes: [drawing.DrawingMode.POLYGON],
+        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
