@@ -24,11 +24,12 @@ export function PolygonMap({
     if (!maps || !drawing) {
       return;
     }
+
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
-        position: maps.ControlPosition.TOP_CENTER,
-        drawingModes: [drawing.DrawingMode.POLYGON],
+        position: google.maps.ControlPosition.TOP_CENTER,
+        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
