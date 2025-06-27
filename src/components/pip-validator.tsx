@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { LatLngLiteral } from 'google.maps';
 import { PolygonMap } from '@/components/polygon-map';
 import { PointMap } from '@/components/point-map';
 import { CodeBlock } from '@/components/code-block';
-import { isPointInPolygon, pointInPolygonCode } from '@/lib/geometry';
+import { isPointInPolygon, pointInPolygonCode, PipResultDetails } from '@/lib/geometry';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PipResult } from '@/components/pip-result';
 import {
@@ -24,10 +24,15 @@ export function PipValidator() {
   const [polygon, setPolygon] = useState<Polygon>([]);
   const [point, setPoint] = useState<LatLngLiteral | null>(null);
   const [mapType, setMapType] = useState<string>('satellite');
+  const [pipDetails, setPipDetails] = useState<PipResultDetails | null>(null);
 
-  const result = useMemo(() => {
-    if (!point || polygon.length < 3) return null;
-    return isPointInPolygon(point, polygon);
+  useEffect(() => {
+    if (point && polygon.length >= 3) {
+      const details = isPointInPolygon(point, polygon);
+      setPipDetails(details);
+    } else {
+      setPipDetails(null);
+    }
   }, [point, polygon]);
 
   const handlePolygonComplete = useCallback((newPolygon: Polygon) => {
@@ -110,6 +115,15 @@ export function PipValidator() {
                 className="mt-2 font-mono text-xs h-24 bg-muted"
               />
             </div>
+            <div className="mt-4">
+              <Label htmlFor="pip-explanation" className="text-sm font-medium">Calculation Steps</Label>
+              <Textarea
+                id="pip-explanation"
+                readOnly
+                value={pipDetails ? pipDetails.explanation : "Draw a polygon and select a point to see the calculation."}
+                className="mt-2 font-mono text-xs h-64 bg-muted"
+              />
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -119,7 +133,7 @@ export function PipValidator() {
           <CardTitle className="font-headline">3. Result</CardTitle>
         </CardHeader>
         <CardContent>
-          <PipResult point={point} result={result} />
+          <PipResult point={point} result={pipDetails ? pipDetails.isInside : null} />
         </CardContent>
       </Card>
       
