@@ -34,9 +34,9 @@ export function PointMap({
         {polygon.length > 0 && (
           <Polygon
             paths={polygon}
-            fillColor="hsl(var(--primary))"
-            fillOpacity={0.1}
-            strokeColor="hsl(var(--primary))"
+            fillColor="hsl(54, 100%, 50%)"
+            fillOpacity={0.4}
+            strokeColor="hsl(54, 100%, 50%)"
             strokeWeight={1}
             strokeOpacity={0.5}
             clickable={false}

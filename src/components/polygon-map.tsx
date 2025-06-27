@@ -42,9 +42,9 @@ export function PolygonMap({
         {polygon.length > 0 && (
           <Polygon
             paths={polygon}
-            fillColor="hsl(var(--primary))"
-            fillOpacity={0.3}
-            strokeColor="hsl(var(--primary))"
+            fillColor="hsl(54, 100%, 50%)"
+            fillOpacity={0.4}
+            strokeColor="hsl(54, 100%, 50%)"
             strokeWeight={2}
           />
         )}

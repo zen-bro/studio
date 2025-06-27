@@ -27,9 +27,9 @@ export const DrawingManager = ({ onPolygonComplete }: DrawingManagerProps) => {
         drawingModes: ['polygon'],
       },
       polygonOptions: {
-        fillColor: 'hsl(var(--primary))',
-        fillOpacity: 0.3,
-        strokeColor: 'hsl(var(--primary))',
+        fillColor: 'hsl(54, 100%, 50%)',
+        fillOpacity: 0.4,
+        strokeColor: 'hsl(54, 100%, 50%)',
         strokeWeight: 2,
         editable: false,
         clickable: false,
