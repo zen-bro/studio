@@ -33,7 +33,7 @@ export const DrawingManager = (props: DrawingManagerProps) => {
     drawingManager.setOptions(props.options ?? {});
   }, [drawingManager, props.options]);
 
-  // Attach event listener
+  // Attach polygon complete event listener
   useEffect(() => {
     if (!drawingManager || !maps) return;
 
@@ -47,6 +47,35 @@ export const DrawingManager = (props: DrawingManagerProps) => {
       google.maps.event.removeListener(listener);
     };
   }, [drawingManager, maps, props.onPolygonComplete]);
+
+  // Listen for drawing mode changes to disable/enable map gestures
+  useEffect(() => {
+    if (!drawingManager || !map) return;
+
+    const listener = google.maps.event.addListener(
+      drawingManager,
+      'drawingmode_changed',
+      () => {
+        const mode = drawingManager.getDrawingMode();
+        if (mode) {
+          // A drawing tool is active, disable map gestures.
+          map.setOptions({ gestureHandling: 'none' });
+        } else {
+          // No drawing tool is active, enable cooperative map gestures.
+          map.setOptions({ gestureHandling: 'cooperative' });
+        }
+      }
+    );
+
+    return () => {
+      google.maps.event.removeListener(listener);
+      // Ensure gestures are re-enabled when the component unmounts.
+      if (map.getGestureHandling() !== 'cooperative') {
+        map.setOptions({ gestureHandling: 'cooperative' });
+      }
+    };
+  }, [drawingManager, map]);
+
 
   return null;
 };
