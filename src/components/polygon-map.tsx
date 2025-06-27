@@ -1,8 +1,9 @@
 'use client';
 
-import { Map, DrawingManager } from '@vis.gl/react-google-maps';
+import { Map } from '@vis.gl/react-google-maps';
 import { Polygon } from '@/components/polygon';
 import type { LatLngLiteral } from 'google.maps';
+import { DrawingManager } from './drawing-manager';
 
 const center = { lat: 40.7128, lng: -74.0060 }; // NYC
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { PipValidator } from '@/components/pip-validator';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
