@@ -21,16 +21,15 @@ export function PolygonMap({
     null
   );
   const drawing = useMapsLibrary('drawing');
-  const maps = useMapsLibrary('maps');
 
   useEffect(() => {
-    if (!drawing || !maps) return;
+    if (!drawing) return;
 
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
         position: ControlPosition.TOP_CENTER,
-        drawingModes: ['polygon'],
+        drawingModes: ['polygon' as google.maps.drawing.DrawingMode],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
@@ -40,7 +39,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, [drawing, maps]);
+  }, [drawing]);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">

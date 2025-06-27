@@ -10,7 +10,6 @@ type DrawingManagerProps = {
 
 export const DrawingManager = (props: DrawingManagerProps) => {
   const map = useMap();
-  const maps = useMapsLibrary('maps');
   const drawing = useMapsLibrary('drawing');
   const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
 
@@ -35,7 +34,7 @@ export const DrawingManager = (props: DrawingManagerProps) => {
 
   // Attach polygon complete event listener
   useEffect(() => {
-    if (!drawingManager || !maps) return;
+    if (!drawingManager) return;
 
     const listener = google.maps.event.addListener(
       drawingManager,
@@ -46,7 +45,7 @@ export const DrawingManager = (props: DrawingManagerProps) => {
     return () => {
       google.maps.event.removeListener(listener);
     };
-  }, [drawingManager, maps, props.onPolygonComplete]);
+  }, [drawingManager, props.onPolygonComplete]);
 
   // Listen for drawing mode changes to disable/enable map gestures
   useEffect(() => {
@@ -58,20 +57,29 @@ export const DrawingManager = (props: DrawingManagerProps) => {
       () => {
         const mode = drawingManager.getDrawingMode();
         if (mode) {
-          // A drawing tool is active, disable map gestures.
-          map.setOptions({ gestureHandling: 'none' });
+          // A drawing tool is active, disable map gestures and set cursor.
+          map.setOptions({ 
+            gestureHandling: 'none',
+            draggableCursor: 'crosshair'
+          });
         } else {
-          // No drawing tool is active, enable cooperative map gestures.
-          map.setOptions({ gestureHandling: 'cooperative' });
+          // No drawing tool is active, enable cooperative map gestures and reset cursor.
+          map.setOptions({ 
+            gestureHandling: 'cooperative',
+            draggableCursor: null // Let the map use its default
+          });
         }
       }
     );
 
     return () => {
       google.maps.event.removeListener(listener);
-      // Ensure gestures are re-enabled when the component unmounts.
+      // Ensure gestures are re-enabled and cursor is reset when the component unmounts.
       if (map.getGestureHandling() !== 'cooperative') {
-        map.setOptions({ gestureHandling: 'cooperative' });
+        map.setOptions({ 
+          gestureHandling: 'cooperative',
+          draggableCursor: null
+        });
       }
     };
   }, [drawingManager, map]);
