@@ -28,7 +28,7 @@ export function PolygonMap({
       drawingControl: true,
       drawingControlOptions: {
         position: ControlPosition.TOP_CENTER,
-        drawingModes: [google.maps.drawing.DrawingMode.POLYGON],
+        drawingModes: [drawing.OverlayType.POLYGON],
       },
       polygonOptions: {
         fillColor: 'hsl(var(--primary))',
