@@ -1,8 +1,8 @@
 'use client';
 
-import { Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { Map, AdvancedMarker, useMap } from '@vis.gl/react-google-maps';
 import type { LatLngLiteral, MapMouseEvent } from 'google.maps';
-import { useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 
 const center = { lat: 26.9631, lng: -80.1114 }; // Tequesta, FL
 
@@ -15,6 +15,9 @@ export function PointMap({
   onPointSelect: (point: LatLngLiteral) => void;
   mapType: string;
 }) {
+  const map = useMap();
+
+  // The click handler is memoized to prevent re-creating it on every render
   const handleClick = useCallback(
     (e: MapMouseEvent) => {
       if (e.latLng) {
@@ -24,6 +27,17 @@ export function PointMap({
     [onPointSelect]
   );
 
+  // Effect to add and remove the click listener from the map instance
+  useEffect(() => {
+    if (!map) return;
+
+    const listener = map.addListener('click', handleClick);
+
+    return () => {
+      listener.remove();
+    };
+  }, [map, handleClick]);
+
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
       <Map
@@ -31,7 +45,6 @@ export function PointMap({
         defaultZoom={13}
         mapId="point-map"
         mapTypeId={mapType}
-        onClick={handleClick}
         fullscreenControl={false}
         streetViewControl={false}
         mapTypeControl={false}
