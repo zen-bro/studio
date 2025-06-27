@@ -16,16 +16,16 @@ export const isPointInPolygon = (point: LatLngLiteral, polygon: LatLngLiteral[])
   const x = point.lng;
   const y = point.lat;
 
-  let explanation = `Coordinate System Mapping\n`;
+  let explanation = `Geographic Coordinate System (GCS) to Cartesian Conversion\n`;
   explanation += `-------------------------------------------------\n`;
-  explanation += `For 2D plane calculations, we map spherical coordinates (Latitude, Longitude) to a Cartesian coordinate system (x, y).\n\n`;
+  explanation += `To perform 2D geometric calculations, we project the geographic coordinates (Latitude, Longitude) from the GCS onto a flat Cartesian plane (x, y). This uses a simple equirectangular projection.\n\n`;
   explanation += `Mapping:\n`;
-  explanation += `  - Longitude is treated as the x-coordinate.\n`;
-  explanation += `  - Latitude is treated as the y-coordinate.\n\n`;
-  explanation += `Selected Point:\n`;
+  explanation += `  - Longitude (λ) becomes the x-coordinate.\n`;
+  explanation += `  - Latitude (φ) becomes the y-coordinate.\n\n`;
+  explanation += `Selected Point (GCS):\n`;
   explanation += `  - Latitude: ${point.lat.toFixed(6)}\n`;
   explanation += `  - Longitude: ${point.lng.toFixed(6)}\n\n`;
-  explanation += `Converted to Coordinates (P):\n`;
+  explanation += `Projected to Cartesian Coordinates (P):\n`;
   explanation += `  - P = (x: ${x.toFixed(6)}, y: ${y.toFixed(6)})\n\n`;
   explanation += `-------------------------------------------------\n`;
   explanation += `Point-in-Polygon Test (Ray Casting Algorithm)\n`;

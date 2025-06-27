@@ -87,15 +87,6 @@ export function PipValidator() {
           <CardContent>
             <p className="text-muted-foreground mb-4">Use the drawing tools on the map to create a polygon.</p>
             <PolygonMap polygon={polygon} onPolygonComplete={handlePolygonComplete} mapType={mapType} />
-            <div className="mt-4">
-              <Label htmlFor="polygon-points" className="text-sm font-medium">Polygon Points (for debugging)</Label>
-              <Textarea
-                id="polygon-points"
-                readOnly
-                value={polygon.length > 0 ? JSON.stringify(polygon, null, 2) : "No polygon drawn yet."}
-                className="mt-2 font-mono text-xs h-32 bg-muted"
-              />
-            </div>
           </CardContent>
         </Card>
 
@@ -106,22 +97,43 @@ export function PipValidator() {
           <CardContent>
             <p className="text-muted-foreground mb-4">Click anywhere on the map to select a point.</p>
             <PointMap point={point} onPointSelect={handlePointSelect} mapType={mapType} />
-            <div className="mt-4">
-              <Label htmlFor="point-coords" className="text-sm font-medium">Selected Point (for debugging)</Label>
-              <Textarea
-                id="point-coords"
-                readOnly
-                value={point ? JSON.stringify(point, null, 2) : "No point selected yet."}
-                className="mt-2 font-mono text-xs h-24 bg-muted"
-              />
-            </div>
           </CardContent>
         </Card>
       </div>
 
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle className="font-headline">Math to convert from latitude, longitude, to coordinates.</CardTitle>
+          <CardTitle className="font-headline">3. Result</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PipResult point={point} result={pipDetails ? pipDetails.isInside : null} />
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div>
+          <Label htmlFor="polygon-points" className="text-sm font-medium">Polygon Points (for debugging)</Label>
+          <Textarea
+            id="polygon-points"
+            readOnly
+            value={polygon.length > 0 ? JSON.stringify(polygon, null, 2) : "No polygon drawn yet."}
+            className="mt-2 font-mono text-xs h-32 bg-muted"
+          />
+        </div>
+        <div>
+          <Label htmlFor="point-coords" className="text-sm font-medium">Selected Point (for debugging)</Label>
+          <Textarea
+            id="point-coords"
+            readOnly
+            value={point ? JSON.stringify(point, null, 2) : "No point selected yet."}
+            className="mt-2 font-mono text-xs h-32 bg-muted"
+          />
+        </div>
+      </div>
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="font-headline">Math for Latitude/Longitude to Geographic Coordinate System (GCS) Conversion</CardTitle>
         </CardHeader>
         <CardContent>
           <Textarea
@@ -130,15 +142,6 @@ export function PipValidator() {
             value={pipDetails ? pipDetails.explanation : "Draw a polygon and select a point to see the calculation."}
             className="font-mono text-xs h-96 bg-muted"
           />
-        </CardContent>
-      </Card>
-      
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="font-headline">3. Result</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PipResult point={point} result={pipDetails ? pipDetails.isInside : null} />
         </CardContent>
       </Card>
       
