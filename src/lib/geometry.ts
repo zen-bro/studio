@@ -5,6 +5,24 @@ export type PipResultDetails = {
   explanation: string;
 };
 
+const decimalToDMS = (decimal: number, isLng: boolean): string => {
+  const absDecimal = Math.abs(decimal);
+  const degrees = Math.floor(absDecimal);
+  const minutesFloat = (absDecimal - degrees) * 60;
+  const minutes = Math.floor(minutesFloat);
+  const seconds = ((minutesFloat - minutes) * 60).toFixed(2);
+  
+  let direction = '';
+  if (isLng) {
+    direction = decimal >= 0 ? 'E' : 'W';
+  } else {
+    direction = decimal >= 0 ? 'N' : 'S';
+  }
+
+  return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+};
+
+
 /**
  * Determines if a point is inside a polygon using the Ray Casting algorithm.
  * @param point The point to check, with lat and lng properties.
@@ -15,56 +33,43 @@ export const isPointInPolygon = (point: LatLngLiteral, polygon: LatLngLiteral[])
   let isInside = false;
   const x = point.lng;
   const y = point.lat;
+  let intersections = 0;
 
-  let explanation = `Geographic Coordinate System (GCS) to Cartesian Conversion\n`;
+  let explanation = `Geographic Coordinate System (GCS) to Degrees, Minutes, Seconds (DMS) Conversion\n`;
   explanation += `-------------------------------------------------\n`;
-  explanation += `To perform 2D geometric calculations, we project the geographic coordinates (Latitude, Longitude) from the GCS onto a flat Cartesian plane (x, y). This uses a simple equirectangular projection.\n\n`;
-  explanation += `Mapping:\n`;
-  explanation += `  - Longitude (λ) becomes the x-coordinate.\n`;
-  explanation += `  - Latitude (φ) becomes the y-coordinate.\n\n`;
-  explanation += `Selected Point (GCS):\n`;
-  explanation += `  - Latitude: ${point.lat.toFixed(6)}\n`;
-  explanation += `  - Longitude: ${point.lng.toFixed(6)}\n\n`;
-  explanation += `Projected to Cartesian Coordinates (P):\n`;
-  explanation += `  - P = (x: ${x.toFixed(6)}, y: ${y.toFixed(6)})\n\n`;
+  explanation += `A point on the globe is represented in the GCS using Latitude and Longitude. Here's the conversion from decimal degrees to the DMS format for the selected point.\n\n`;
+  
+  explanation += `Latitude Conversion (φ):\n`;
+  explanation += `  - Decimal: ${point.lat.toFixed(6)}\n`;
+  explanation += `  - DMS: ${decimalToDMS(point.lat, false)}\n\n`;
+
+  explanation += `Longitude Conversion (λ):\n`;
+  explanation += `  - Decimal: ${point.lng.toFixed(6)}\n`;
+  explanation += `  - DMS: ${decimalToDMS(point.lng, true)}\n\n`;
+
   explanation += `-------------------------------------------------\n`;
   explanation += `Point-in-Polygon Test (Ray Casting Algorithm)\n`;
   explanation += `-------------------------------------------------\n`;
-  explanation += `The algorithm casts a horizontal ray from P to the right and counts intersections with polygon edges. An odd number of intersections means the point is inside.\n\n`;
-  explanation += `Polygon Edges Analysis:\n`;
+  explanation += `To perform the 2D test, we project the GCS coordinates to a flat plane (x: Longitude, y: Latitude). A ray is cast from the point, and intersections with polygon edges are counted.\n\n`;
 
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const xi = polygon[i].lng, yi = polygon[i].lat;
     const xj = polygon[j].lng, yj = polygon[j].lat;
 
-    explanation += `\nEdge ${i + 1}: Vertex ${i}(xᵢ=${xi.toFixed(6)}, yᵢ=${yi.toFixed(6)}) to Vertex ${j}(xⱼ=${xj.toFixed(6)}, yⱼ=${yj.toFixed(6)})\n`;
-    
-    const yCondition = ((yi > y) !== (yj > y));
-    explanation += `1. Is point's y between edge's y-coords? ((yᵢ > y) != (yⱼ > y))\n`;
-    explanation += `   ((${yi.toFixed(6)} > ${y.toFixed(6)}) != (${yj.toFixed(6)} > ${y.toFixed(6)})) -> (${yi > y} != ${yj > y}) -> ${yCondition}\n`;
-
-    if (yCondition) {
-      const intersectX = (xj - xi) * (y - yi) / (yj - yi) + xi;
-      const xCondition = (x < intersectX);
-      explanation += `2. Is point's x to the left of intersection x? (x < x_intersect)\n`;
-      explanation += `   x_intersect = (xⱼ - xᵢ) * (y - yᵢ) / (yⱼ - yᵢ) + xᵢ\n`;
-      explanation += `   x_intersect = (${xj.toFixed(6)} - ${xi.toFixed(6)}) * (${y.toFixed(6)} - ${yi.toFixed(6)}) / (${yj.toFixed(6)} - ${yi.toFixed(6)}) + ${xi.toFixed(6)} = ${intersectX.toFixed(6)}\n`;
-      explanation += `   Is ${x.toFixed(6)} < ${intersectX.toFixed(6)}? -> ${xCondition}\n`;
-      
-      if (xCondition) {
-        isInside = !isInside;
-        explanation += `   Intersection found! Current intersections: ${isInside ? 'odd' : 'even'}. Toggling isInside to ${isInside}.\n`;
-      } else {
-        explanation += `   No intersection. Point is to the right.\n`;
-      }
-    } else {
-      explanation += `   No intersection. Ray does not cross this edge's y-span.\n`;
+    const intersect = ((yi > y) !== (yj > y))
+        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) {
+      isInside = !isInside;
+      intersections++;
     }
   }
 
-  explanation += `\nFinal Result\n`;
-  explanation += `-------------------------------------------------\n`;
-  explanation += `Total intersections are ${isInside ? 'odd' : 'even'}. Point is ${isInside ? 'INSIDE' : 'OUTSIDE'} the polygon.\n`;
+  explanation += `Ray Casting Result:\n`;
+  explanation += `  - Total Intersections: ${intersections}\n`;
+  explanation += `  - An odd number of intersections means the point is inside.\n\n`;
+  
+  explanation += `Final Conclusion:\n`;
+  explanation += `  - The point is ${isInside ? 'INSIDE' : 'OUTSIDE'} the polygon.\n`;
   
   return { isInside, explanation };
 };

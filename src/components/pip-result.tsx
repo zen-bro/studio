@@ -29,7 +29,7 @@ export function PipResult({
             variant={result ? 'default' : 'destructive'}
             className={cn(
               'text-lg font-bold px-4 py-2',
-              result && 'bg-accent text-accent-foreground hover:bg-accent/90 border-transparent'
+              result && 'bg-green-600 text-primary-foreground hover:bg-green-700 border-transparent'
             )}
           >
             {result ? 'Inside' : 'Outside'}
