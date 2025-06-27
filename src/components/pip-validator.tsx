@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 type Polygon = LatLngLiteral[];
 
@@ -73,6 +74,15 @@ export function PipValidator() {
           <CardContent>
             <p className="text-muted-foreground mb-4">Use the drawing tools on the map to create a polygon.</p>
             <PolygonMap polygon={polygon} onPolygonComplete={setPolygon} mapType={mapType} />
+            <div className="mt-4">
+              <Label htmlFor="polygon-points" className="text-sm font-medium">Polygon Points (for debugging)</Label>
+              <Textarea
+                id="polygon-points"
+                readOnly
+                value={polygon.length > 0 ? JSON.stringify(polygon, null, 2) : "No polygon drawn yet."}
+                className="mt-2 font-mono text-xs h-32 bg-muted"
+              />
+            </div>
           </CardContent>
         </Card>
 
