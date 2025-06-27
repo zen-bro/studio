@@ -1,6 +1,6 @@
 'use client';
 
-import { Map, useMapsLibrary, ControlPosition } from '@vis.gl/react-google-maps';
+import { Map, ControlPosition } from '@vis.gl/react-google-maps';
 import { Polygon } from '@/components/polygon';
 import type { LatLngLiteral } from 'google.maps';
 import { DrawingManager } from './drawing-manager';
@@ -17,14 +17,9 @@ export function PolygonMap({
   onPolygonComplete: (polygon: LatLngLiteral[]) => void;
   mapType: string;
 }) {
-  const drawing = useMapsLibrary('drawing');
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<google.maps.drawing.DrawingManagerOptions | null>(null);
 
   useEffect(() => {
-    if (!drawing) {
-      return;
-    }
-
     setDrawingManagerOptions({
       drawingControl: true,
       drawingControlOptions: {
@@ -39,7 +34,7 @@ export function PolygonMap({
         editable: false,
       },
     });
-  }, [drawing]);
+  }, []);
 
   return (
     <div className="h-[400px] w-full rounded-lg overflow-hidden border shadow-inner">
@@ -51,7 +46,7 @@ export function PolygonMap({
         fullscreenControl={false}
         streetViewControl={false}
         mapTypeControl={false}
-        gestureHandling="greedy"
+        gestureHandling="cooperative"
       >
         {drawingManagerOptions && (
           <DrawingManager

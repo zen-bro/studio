@@ -28,7 +28,7 @@ export function PointMap({
         fullscreenControl={false}
         streetViewControl={false}
         mapTypeControl={false}
-        gestureHandling="greedy"
+        gestureHandling="cooperative"
       >
         {polygon.length > 0 && (
           <Polygon
